@@ -12,20 +12,49 @@
         <p>{{ destination.description }}</p>
       </div>
     </section>
+    <section class="experiences">
+      <h2>Best experiences in {{ destination.name }}</h2>
+      <div class="cards">
+        <div
+          v-for="experience in destination.experiences"
+          :key="experience.slug"
+          class="card"
+        >
+          <router-link
+            :to="{
+              name: 'experienceDetails',
+              params: { experienceSlug: experience.slug },
+            }"
+          >
+            <img
+              :src="require(`@/assets/${experience.image}`)"
+              alt="experience.name"
+            />
+            <span class="card__text">{{ experience.name }}</span>
+          </router-link>
+        </div>
+      </div>
+      <router-view :key="$route.path" />
+      <!-- forces the replacement of the router vue component when navigation occurs -->
+    </section>
   </div>
 </template>
 <script>
 import store from "@/store.js";
 export default {
   data() {
-    return {
-      destinationId: this.$route.params.id,
-    };
+    return {};
+  },
+  props: {
+    slug: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
     destination() {
       return store.destinations.find(
-        (destination) => destination.id === this.destinationId
+        (destination) => destination.slug === this.slug
       );
     },
   },
